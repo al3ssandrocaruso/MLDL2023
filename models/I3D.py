@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from utils.logger import logger
 from utils.transforms import *
 import models
+import torchvision
 
 
 class InceptionI3d(nn.Module):

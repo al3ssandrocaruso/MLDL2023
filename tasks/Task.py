@@ -4,7 +4,6 @@ from pathlib import Path
 import torch
 from abc import ABCMeta, abstractmethod
 from utils.logger import logger
-
 from typing import Dict, Optional
 
 
