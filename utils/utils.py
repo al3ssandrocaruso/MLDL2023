@@ -1,5 +1,38 @@
 from collections import Mapping
 import torch
+import numpy as np
+
+
+def dense_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip, stride):
+    centroid = (start_frame_clip + end_frame_clip) // 2
+
+    if num_frames_per_clip % 2 == 0:
+        num_frames_left = num_frames_per_clip // 2
+        num_frames_right = num_frames_left - 1
+    else:
+        num_frames_left = num_frames_per_clip // 2
+        num_frames_right = num_frames_left
+
+    stride_left = max(stride, 1)  # ensure stride is at least 1
+    stride_right = max(stride, 1)  # ensure stride is at least 1
+
+    num_frames_left_adjusted = min(num_frames_left, int((centroid - start_frame_clip) / stride_left))
+    num_frames_right_adjusted = min(num_frames_right, int((end_frame_clip - centroid) / stride_right))
+
+    frames = [centroid]
+    for i in range(1, num_frames_left_adjusted+1):
+        frame_left = int(round(centroid - i*stride_left))
+        frames.insert(0, frame_left)
+    for i in range(1, num_frames_right_adjusted+1):
+        frame_right = int(round(centroid + i*stride_right))
+        frames.append(frame_right)
+
+    return frames
+
+def uniform_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip):
+    frame_indices = np.linspace(start_frame_clip, end_frame_clip, num=num_frames_per_clip, dtype=int)
+    sampled_frames = [frame_indices[i] for i in range(num_frames_per_clip)]
+    return sampled_frames
 
 
 def get_domains_and_labels(args):
@@ -92,6 +125,7 @@ class Accuracy(object):
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
         self.val, self.acc, self.avg, self.sum, self.count = 0, 0, 0, 0, 0
@@ -116,7 +150,7 @@ def pformat_dict(d, indent=0):
     for key, value in d.items():
         fstr += '\n' + '  ' * indent + str(key) + ":"
         if isinstance(value, Mapping):
-            fstr += pformat_dict(value, indent+1)
+            fstr += pformat_dict(value, indent + 1)
         else:
             fstr += ' ' + str(value)
     return fstr
