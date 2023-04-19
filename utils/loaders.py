@@ -100,16 +100,35 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
         return np.array(output)
 
-    def _get_val_indices(self, record, modality):
-        ##################################################################
-        # TODO: implement sampling for testing mode                      #
-        # Give the record and the modality, this function should return  #
-        # a list of integers representing the frames to be selected from #
-        # the video clip.                                                #
-        # Remember that the returned array should have size              #
-        #           num_clip x num_frames_per_clip                       #
-        ##################################################################
-        raise NotImplementedError("You should implement _get_val_indices")
+    def _get_val_indices(self, record, modality='RGB', sampling='uniform', num_clip=5, clip_length=10,
+                           num_frames_per_clip=5, stride = 2):
+
+        # ensure num_frames_per_clip has to be > clip_lenght
+        start_frame = record.start_frame
+        end_frame = record.end_frame
+        central_min = start_frame + clip_length // 2
+        central_max = end_frame - clip_length // 2
+        central_points = np.linspace(central_min, central_max, num=end_frame - clip_length + 1, dtype=int)
+
+        # randomly sample N central points
+        central_points = np.random.choice(central_points, size=num_clip, replace=False)
+
+        # generate clips
+        clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+
+        output = []
+
+        if sampling == 'uniform':
+            for clip in clips:
+                frame_indices = np.linspace(clip[0], clip[1], num=num_frames_per_clip, dtype=int)
+                frames = [frame_indices[i] for i in range(num_frames_per_clip)]
+                output.append(frames)
+
+        elif sampling == 'dense':
+            for clip in clips:
+                output.append(dense_sampling(clip[0], clip[1], num_frames_per_clip, stride))
+
+        return np.array(output)
 
     def __getitem__(self, index):
 
@@ -190,3 +209,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
     def __len__(self):
         return len(self.video_list)
+
+
+class DatasetConf:
+    def __init__(self, annotations_path,stride):
+        self.annotations_path = annotations_path
+        self.stride = stride
