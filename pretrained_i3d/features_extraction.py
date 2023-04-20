@@ -6,8 +6,8 @@ import torch.optim as optim
 import utils.loaders
 from utils.loaders import EpicKitchensDataset
 
-PATH1 = "rgb_imagenet.pt"
-PATH2 = "C:\\tmp\\MLDLproject\\dataTestPoint2"
+PATH1 = "pretrained_i3d\\rgb_imagenet.pt"
+PATH2 = "train_eval\\"
 batch_size = 1024
 
 

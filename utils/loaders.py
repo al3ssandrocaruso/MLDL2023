@@ -16,9 +16,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
     def __init__(self, split, modalities, mode, dataset_conf, num_frames_per_clip, num_clips, dense_sampling,
                  transform=None, load_feat=False, additional_info=False, **kwargs):
         """
-        split: str (D1, D2 or D3)
-        modalities: list(str, str, ...)
-        mode: str (train, test/val)
+        split: str (D1, D2 or D3) -> this is the split we want to select in the folder train_val
+        modalities: list(str, str, ...) -> group of modalities we are considering for the analysis
+        mode: str (train, test/val) -> modality we want to use the dataset for
         dataset_conf must contain the following:
             - annotations_path: str
             - stride: int
@@ -42,6 +42,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         self.stride = self.dataset_conf.stride
         self.additional_info = additional_info
 
+        # creation of the pickle file name considering the split and the modality (e.g. D1 + _ + test + .pkl)
         if self.mode == "train":
             pickle_name = split + "_train.pkl"
         elif kwargs.get('save', None) is not None:
@@ -49,6 +50,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         else:
             pickle_name = split + "_test.pkl"
 
+        # get the pickle file location (path + name). The path must be inserted in dataset_conf.annotations_path
         self.list_file = pd.read_pickle(os.path.join(self.dataset_conf.annotations_path, pickle_name))
         logger.info(f"Dataloader for {split}-{self.mode} with {len(self.list_file)} samples generated")
         self.video_list = [EpicVideoRecord(tup, self.dataset_conf) for tup in self.list_file.iterrows()]

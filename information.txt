@@ -1,0 +1,59 @@
+This file contains a general description of the project
+- action-net
+    - ActionNet_test.pkl / ActionNet_train.pkl
+        Here we can find .pkl files with annotations related to ActionNet dataset.
+        Pickle files can be transformed and read using pandas.
+        This is a sample structure of ActionNet_test.pkl:
+        index                        4
+        file                 S02_2.pkl
+        description    Peel a cucumber
+        labels                    Peel
+    - visualize_spec
+        Code for obtaining spectrogram of signal (used for EMG in our case).
+- configs
+    Configuration files used to manage the project
+- models
+    - init
+    - FinalClassifier
+    - I3D
+    - VideModel
+- pretrained_i3d
+    Here we can find the .pt files containing the pretrained i3d models for both flow and RGB.
+    We will use this files in feature_extractions.py in order to load and run the model and extract the features.
+- tasks
+    - init
+        EMPTY
+    - action_recognition_task
+
+    - Task
+- train_val
+    This directory contains a list of pickle files used by the EpicKitchenDataset in order to create record and get information about videos.
+    Pickle files can be transformed and read using pandas.
+    This is a sample structure of D1_test.pkl:
+    uid                        13744
+    participant_id               P08
+    video_id                  P08_09
+    narration          get mocha pot
+    start_timestamp      00:00:02.61
+    stop_timestamp       00:00:03.61
+    start_frame                  156
+    stop_frame                   216
+    verb                         get
+    verb_class                     0
+- utils
+    - init
+        EMPTY
+    - args
+        Code for configurations files and paths
+    - epic_record
+        Contains EpicVideoRecord which is a child class which implements VideoRecord
+    - generate_frame_archives
+        Code for generating frames archives from videos
+    - loaders
+        Contains classes for managing datasets: EpicKitchenDataset class
+    - logger
+        Functions for using the logger
+    - transforms
+        Functions and classes related to transformations
+    - video_record
+        Contains the class VideoRecord used for video record
