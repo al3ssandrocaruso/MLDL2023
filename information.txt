@@ -16,7 +16,7 @@ This file contains a general description of the project
     - init
     - FinalClassifier
     - I3D
-    - VideModel
+    - VideoModel
 - pretrained_i3d
     Here we can find the .pt files containing the pretrained i3d models for both flow and RGB.
     We will use this files in feature_extractions.py in order to load and run the model and extract the features.
@@ -24,7 +24,6 @@ This file contains a general description of the project
     - init
         EMPTY
     - action_recognition_task
-
     - Task
 - train_val
     This directory contains a list of pickle files used by the EpicKitchenDataset in order to create record and get information about videos.

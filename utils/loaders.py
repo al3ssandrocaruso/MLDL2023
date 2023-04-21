@@ -211,9 +211,3 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
     def __len__(self):
         return len(self.video_list)
-
-
-class DatasetConf:
-    def __init__(self, annotations_path,stride):
-        self.annotations_path = annotations_path
-        self.stride = stride

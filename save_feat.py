@@ -1,3 +1,14 @@
+"""
+INFORMATION RELATED TO THIS CODE
+This piece of code has the aim of extracting the features related to our dataset at several checkpoints of an I3D
+pretrained on imagenet and fine-tuned on EPIC-KITCHEN. The several checkpoints represent the weights of the network at
+different epochs where the last contains the final result of the training.
+PARAMETERS:
+    1 - config=configs/I3D_save_feat.yaml -> location of the configuration file we are going to use from this task
+    2 - dataset.shift=D1-D1 -> dataset shifts we are going to use (train-test but here they have the same name)
+    3 - dataset.RGB.data_path="C:\\tmp\\MLDLproject\\dataTestPoint2" -> directory in which we can find the several
+        checkpoints
+"""
 import pickle
 from utils.logger import logger
 import torch.nn.parallel
