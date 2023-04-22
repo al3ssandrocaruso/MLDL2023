@@ -33,6 +33,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         additional_info: bool, set to True if you want to receive also the uid and the video name from the get function
             notice, this may be useful to do some proper visualizations!
         """
+
         self.modalities = modalities  # considered modalities (ex. [RGB, Flow, Spec, Event])
         self.mode = mode  # 'train', 'val' or 'test'
         self.dataset_conf = dataset_conf
@@ -72,8 +73,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
             self.model_features = pd.merge(self.model_features, self.list_file, how="inner", on="uid")
 
-    def _get_train_indices(self, record, modality='RGB', sampling='uniform', num_clip=5, clip_length=10,
-                           num_frames_per_clip=5, stride = 2):
+    def _get_train_indices(self, record, modality='RGB', sampling='uniform', clip_length=32, stride = 2):
 
         # ensure num_frames_per_clip has to be > clip_lenght
         start_frame = record.start_frame
@@ -83,7 +83,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         central_points = np.linspace(central_min, central_max, num=end_frame - clip_length + 1, dtype=int)
 
         # randomly sample N central points
-        central_points = np.random.choice(central_points, size=num_clip, replace=False)
+        central_points = np.random.choice(central_points, size=self.num_clips, replace=False)
 
         # generate clips
         clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
@@ -92,18 +92,17 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
         if sampling == 'uniform':
             for clip in clips:
-                frame_indices = np.linspace(clip[0], clip[1], num=num_frames_per_clip, dtype=int)
-                frames = [frame_indices[i] for i in range(num_frames_per_clip)]
+                frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
+                frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
                 output.append(frames)
 
         elif sampling == 'dense':
             for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], num_frames_per_clip, stride))
+                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, stride))
 
         return np.array(output).reshape(-1,1)
 
-    def _get_val_indices(self, record, modality='RGB', sampling='uniform', num_clip=5, clip_length=10,
-                           num_frames_per_clip=5, stride = 2):
+    def _get_val_indices(self, record, modality='RGB', sampling='uniform', clip_length=32, stride = 2):
 
         # ensure num_frames_per_clip has to be > clip_lenght
         start_frame = record.start_frame
@@ -113,7 +112,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         central_points = np.linspace(central_min, central_max, num=end_frame - clip_length + 1, dtype=int)
 
         # randomly sample N central points
-        central_points = np.random.choice(central_points, size=num_clip, replace=False)
+        central_points = np.random.choice(central_points, size=self.num_clips, replace=False)
 
         # generate clips
         clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
@@ -122,13 +121,13 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
         if sampling == 'uniform':
             for clip in clips:
-                frame_indices = np.linspace(clip[0], clip[1], num=num_frames_per_clip, dtype=int)
-                frames = [frame_indices[i] for i in range(num_frames_per_clip)]
+                frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
+                frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
                 output.append(frames)
 
         elif sampling == 'dense':
             for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], num_frames_per_clip, stride))
+                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, stride))
 
         return np.array(output).reshape(-1,1)
 
