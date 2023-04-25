@@ -77,7 +77,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         output = []
         if modality == 'RGB':
 
-            clip_length = 64
+            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
 
             start_frame = record.start_frame
             end_frame = record.end_frame
@@ -108,7 +108,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         output = []
         if modality == 'RGB':
 
-            clip_length = 64
+            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
 
             start_frame = record.start_frame
             end_frame = record.end_frame
