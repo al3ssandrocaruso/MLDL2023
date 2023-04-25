@@ -79,8 +79,8 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
             clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
 
-            start_frame = record.start_frame
-            end_frame = record.end_frame
+            start_frame = int(record.start_frame)
+            end_frame = int(record.end_frame)
             central_min = start_frame + clip_length // 2
             central_max = end_frame - clip_length // 2
 
@@ -103,15 +103,15 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-        return np.array(output).reshape(-1, 1)
+        return np.array(output).reshape(-1, 1) - start_frame
     def _get_val_indices(self, record, modality='RGB'):
         output = []
         if modality == 'RGB':
 
             clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
 
-            start_frame = record.start_frame
-            end_frame = record.end_frame
+            start_frame = int(record.start_frame)
+            end_frame = int(record.end_frame)
             central_min = start_frame + clip_length // 2
             central_max = end_frame - clip_length // 2
 
@@ -133,7 +133,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-        return np.array(output).reshape(-1, 1)
+        return np.array(output).reshape(-1, 1) - start_frame
 
     def __getitem__(self, index):
 
