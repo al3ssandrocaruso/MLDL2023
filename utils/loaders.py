@@ -77,7 +77,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         output = []
         if modality == 'RGB':
 
-            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride) * 2
+            clip_length = 64
 
             start_frame = record.start_frame
             end_frame = record.end_frame
@@ -85,7 +85,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             central_max = end_frame - clip_length // 2
 
             # randomly sample N central points
-            central_points = np.random.choice(np.array(range(central_min, central_max)), size=int(self.num_clips), replace=False)
+            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
 
             # generate clips
             if clip_length % 2 == 0:
@@ -108,7 +108,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         output = []
         if modality == 'RGB':
 
-            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride) * 2
+            clip_length = 64
 
             start_frame = record.start_frame
             end_frame = record.end_frame
@@ -116,7 +116,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             central_max = end_frame - clip_length // 2
 
             # randomly sample N central points
-            central_points = np.random.choice(np.array(range(central_min, central_max)), size=int(self.num_clips), replace=False)
+            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
 
             # generate clips
             if clip_length % 2 == 0:
