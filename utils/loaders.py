@@ -80,13 +80,15 @@ class EpicKitchensDataset(data.Dataset, ABC):
         end_frame = record.end_frame
         central_min = start_frame + clip_length // 2
         central_max = end_frame - clip_length // 2
-        central_points = np.linspace(central_min, central_max, num=end_frame - clip_length + 1, dtype=int)
 
         # randomly sample N central points
-        central_points = np.random.choice(central_points, size=self.num_clips, replace=False)
+        central_points = np.random.choice(range(central_min, central_max), size=self.num_clips, replace=False)
 
         # generate clips
-        clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+        if clip_length % 2 == 0:
+            clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+        else:
+            clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
 
         output = []
 
@@ -109,13 +111,15 @@ class EpicKitchensDataset(data.Dataset, ABC):
         end_frame = record.end_frame
         central_min = start_frame + clip_length // 2
         central_max = end_frame - clip_length // 2
-        central_points = np.linspace(central_min, central_max, num=end_frame - clip_length + 1, dtype=int)
 
         # randomly sample N central points
-        central_points = np.random.choice(central_points, size=self.num_clips, replace=False)
+        central_points = np.random.choice(range(central_min, central_max), size=self.num_clips, replace=False)
 
         # generate clips
-        clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+        if clip_length % 2 == 0:
+            clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+        else:
+            clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
 
         output = []
 
