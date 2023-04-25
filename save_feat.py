@@ -13,6 +13,7 @@ import pickle
 from utils.logger import logger
 import torch.nn.parallel
 import torch.optim
+import torch.utils.data
 import torch
 from utils.loaders import EpicKitchensDataset
 from utils.args import args
