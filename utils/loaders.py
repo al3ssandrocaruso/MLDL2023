@@ -97,16 +97,16 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
                     frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
-                    output.append(frames)
+                    output.extend(frames)
 
             else:  # dense sampling
                 for clip in clips:
-                    output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+                    output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-                    # subtract the start_frame from each element in the list
+            # subtract the start_frame from each element in the list
             output = [x - start_frame for x in output]
 
-            return np.array(output).reshape(-1, 1)
+        return output
 
     def _get_val_indices(self, record, modality='RGB'):
         output = []
@@ -132,16 +132,17 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
                     frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
-                    output.append(frames)
+                    output.extend(frames)
 
             else:  # dense sampling
                 for clip in clips:
-                    output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+                    output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
             # subtract the start_frame from each element in the list
+
             output = [x - start_frame for x in output]
 
-            return np.array(output).reshape(-1,1)
+        return output
     def __getitem__(self, index):
 
         frames = {}
