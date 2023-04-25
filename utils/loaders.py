@@ -37,10 +37,10 @@ class EpicKitchensDataset(data.Dataset, ABC):
         self.modalities = modalities  # considered modalities (ex. [RGB, Flow, Spec, Event])
         self.mode = mode  # 'train', 'val' or 'test'
         self.dataset_conf = dataset_conf
-        self.num_frames_per_clip = num_frames_per_clip
+        self.num_frames_per_clip = int(num_frames_per_clip)
         self.dense_sampling = dense_sampling
-        self.num_clips = num_clips
-        self.stride = self.dataset_conf.stride
+        self.num_clips = int(num_clips)
+        self.stride = int(self.dataset_conf.stride)
         self.additional_info = additional_info
 
         # creation of the pickle file name considering the split and the modality (e.g. D1 + _ + test + .pkl)
