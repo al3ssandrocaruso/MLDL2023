@@ -73,9 +73,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
             self.model_features = pd.merge(self.model_features, self.list_file, how="inner", on="uid")
 
-    def _get_train_indices(self, record, modality='RGB', sampling='uniform', clip_length=32, stride = 2):
+    def _get_train_indices(self, record, modality='RGB'):
+        clip_length = self.num_clips * self.stride * 2
 
-        # ensure num_frames_per_clip has to be > clip_lenght
         start_frame = record.start_frame
         end_frame = record.end_frame
         central_min = start_frame + clip_length // 2
@@ -92,21 +92,21 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
         output = []
 
-        if sampling == 'uniform':
+        if self.dense_sampling == False:  # uniform sampling
             for clip in clips:
                 frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
                 frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
                 output.append(frames)
 
-        elif sampling == 'dense':
+        else:  # dense sampling
             for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, stride))
+                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, self.stride))
 
-        return np.array(output).reshape(-1,1)
+        return np.array(output).reshape(-1, 1)
 
-    def _get_val_indices(self, record, modality='RGB', sampling='uniform', clip_length=32, stride = 2):
+    def _get_val_indices(self, record, modality='RGB'):
+        clip_length = self.num_clips * self.stride * 2
 
-        # ensure num_frames_per_clip has to be > clip_lenght
         start_frame = record.start_frame
         end_frame = record.end_frame
         central_min = start_frame + clip_length // 2
@@ -123,17 +123,17 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
         output = []
 
-        if sampling == 'uniform':
+        if self.dense_sampling == False:  # uniform sampling
             for clip in clips:
                 frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
                 frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
                 output.append(frames)
 
-        elif sampling == 'dense':
+        else:  # dense sampling
             for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, stride))
+                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, self.stride))
 
-        return np.array(output).reshape(-1,1)
+        return np.array(output).reshape(-1, 1)
 
     def __getitem__(self, index):
 
