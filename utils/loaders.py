@@ -85,13 +85,14 @@ class EpicKitchensDataset(data.Dataset, ABC):
             central_max = end_frame - clip_length // 2
 
             # randomly sample N central points
-            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
+            central_points = np.random.choice(np.array(range(central_min, central_max)), size=int(self.num_clips), replace=False)
 
             # generate clips
             if clip_length % 2 == 0:
                 clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
             else:
                 clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+
             if self.dense_sampling.RGB == False:  # uniform sampling
                 for clip in clips:
                     frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
@@ -115,7 +116,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             central_max = end_frame - clip_length // 2
 
             # randomly sample N central points
-            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
+            central_points = np.random.choice(np.array(range(central_min, central_max)), size=int(self.num_clips), replace=False)
 
             # generate clips
             if clip_length % 2 == 0:
