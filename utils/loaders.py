@@ -103,10 +103,10 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-            # subtract the start_frame from each element in the list
-            output = np.array(output).reshape(-1, 1) - start_frame
+                    # subtract the start_frame from each element in the list
+        output = np.array(output) - start_frame
 
-        return output
+        return output.reshape(-1, 1)
 
     def _get_val_indices(self, record, modality='RGB'):
         output = []
@@ -139,9 +139,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
             # subtract the start_frame from each element in the list
-            output = np.array(output).reshape(-1, 1) - start_frame
+        output = np.array(output) - start_frame
 
-        return output
+        return output.reshape(-1,1)
     def __getitem__(self, index):
 
         frames = {}
