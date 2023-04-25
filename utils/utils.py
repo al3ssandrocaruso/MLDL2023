@@ -41,7 +41,7 @@ def dense_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip, stride
                 frame_right = int(round(centroid + (num_frames_right_adjusted + i // 2 + 1) * stride_right))
                 frames.append(frame_right)
 
-    return frames, num_frames_left_adjusted, num_frames_right_adjusted
+    return frames
 
 def uniform_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip):
     frame_indices = np.linspace(start_frame_clip, end_frame_clip, num=num_frames_per_clip, dtype=int)
