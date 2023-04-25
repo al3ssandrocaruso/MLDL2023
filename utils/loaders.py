@@ -121,7 +121,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
             # randomly sample N central points
             central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
-
+#a
             # generate clips
             if clip_length % 2 == 0:
                 clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
