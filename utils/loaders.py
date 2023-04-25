@@ -37,10 +37,10 @@ class EpicKitchensDataset(data.Dataset, ABC):
         self.modalities = modalities  # considered modalities (ex. [RGB, Flow, Spec, Event])
         self.mode = mode  # 'train', 'val' or 'test'
         self.dataset_conf = dataset_conf
-        self.num_frames_per_clip = int(num_frames_per_clip)
+        self.num_frames_per_clip = num_frames_per_clip
         self.dense_sampling = dense_sampling
-        self.num_clips = int(num_clips)
-        self.stride = int(self.dataset_conf.stride)
+        self.num_clips = num_clips
+        self.stride = self.dataset_conf.stride
         self.additional_info = additional_info
 
         # creation of the pickle file name considering the split and the modality (e.g. D1 + _ + test + .pkl)
@@ -74,64 +74,63 @@ class EpicKitchensDataset(data.Dataset, ABC):
             self.model_features = pd.merge(self.model_features, self.list_file, how="inner", on="uid")
 
     def _get_train_indices(self, record, modality='RGB'):
-        clip_length = self.num_clips * self.stride * 2
-
-        start_frame = record.start_frame
-        end_frame = record.end_frame
-        central_min = start_frame + clip_length // 2
-        central_max = end_frame - clip_length // 2
-
-        # randomly sample N central points
-        central_points = np.random.choice(range(central_min, central_max), size=self.num_clips, replace=False)
-
-        # generate clips
-        if clip_length % 2 == 0:
-            clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
-        else:
-            clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
-
         output = []
+        if modality == 'RGB':
 
-        if self.dense_sampling == False:  # uniform sampling
-            for clip in clips:
-                frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
-                frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
-                output.append(frames)
+            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride) * 2
 
-        else:  # dense sampling
-            for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, self.stride))
+            start_frame = record.start_frame
+            end_frame = record.end_frame
+            central_min = start_frame + clip_length // 2
+            central_max = end_frame - clip_length // 2
+
+            # randomly sample N central points
+            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
+
+            # generate clips
+            if clip_length % 2 == 0:
+                clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+            else:
+                clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+            if self.dense_sampling.RGB == False:  # uniform sampling
+                for clip in clips:
+                    frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
+                    frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
+                    output.append(frames)
+
+            else:  # dense sampling
+                for clip in clips:
+                    output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
         return np.array(output).reshape(-1, 1)
-
     def _get_val_indices(self, record, modality='RGB'):
-        clip_length = self.num_clips * self.stride * 2
-
-        start_frame = record.start_frame
-        end_frame = record.end_frame
-        central_min = start_frame + clip_length // 2
-        central_max = end_frame - clip_length // 2
-
-        # randomly sample N central points
-        central_points = np.random.choice(range(central_min, central_max), size=self.num_clips, replace=False)
-
-        # generate clips
-        if clip_length % 2 == 0:
-            clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
-        else:
-            clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
-
         output = []
+        if modality == 'RGB':
 
-        if self.dense_sampling == False:  # uniform sampling
-            for clip in clips:
-                frame_indices = np.linspace(clip[0], clip[1], num=self.num_frames_per_clip, dtype=int)
-                frames = [frame_indices[i] for i in range(self.num_frames_per_clip)]
-                output.append(frames)
+            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride) * 2
 
-        else:  # dense sampling
-            for clip in clips:
-                output.append(dense_sampling(clip[0], clip[1], self.num_frames_per_clip, self.stride))
+            start_frame = record.start_frame
+            end_frame = record.end_frame
+            central_min = start_frame + clip_length // 2
+            central_max = end_frame - clip_length // 2
+
+            # randomly sample N central points
+            central_points = np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False)
+
+            # generate clips
+            if clip_length % 2 == 0:
+                clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+            else:
+                clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+            if self.dense_sampling.RGB == False:  # uniform sampling
+                for clip in clips:
+                    frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
+                    frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
+                    output.append(frames)
+
+            else:  # dense sampling
+                for clip in clips:
+                    output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
         return np.array(output).reshape(-1, 1)
 
