@@ -103,7 +103,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
                 for clip in clips:
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-        return (np.array(output) - start_frame).reshape(-1, 1)
+        result_list = [x - start_frame for x in output]
+        result_array = np.array(result_list).reshape(-1, 1)
+        return result_array
     def _get_val_indices(self, record, modality='RGB'):
         output = []
         if modality == 'RGB':
@@ -132,8 +134,10 @@ class EpicKitchensDataset(data.Dataset, ABC):
             else:  # dense sampling
                 for clip in clips:
                     output.append(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+        result_list = [x - start_frame for x in output]
+        result_array = np.array(result_list).reshape(-1, 1)
+        return result_array
 
-        return (np.array(output) - start_frame).reshape(-1, 1)
 
     def __getitem__(self, index):
 
