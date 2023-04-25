@@ -106,7 +106,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
                     # subtract the start_frame from each element in the list
             output = [x - start_frame for x in output]
 
-        return np.array(output).reshape(-1, 1)
+            return np.array(output).reshape(-1, 1)
 
     def _get_val_indices(self, record, modality='RGB'):
         output = []
@@ -141,7 +141,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             # subtract the start_frame from each element in the list
             output = [x - start_frame for x in output]
 
-        return np.array(output).reshape(-1,1)
+            return np.array(output).reshape(-1,1)
     def __getitem__(self, index):
 
         frames = {}
