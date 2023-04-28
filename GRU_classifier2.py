@@ -78,6 +78,8 @@ def main():
                                                                        None, load_feat=True),
                                                    batch_size=args.batch_size, shuffle=True,
                                                    num_workers=args.dataset.workers, pin_memory=True, drop_last=True)
+        train(action_classifier, train_loader, device, action_classifier.current_iter, num_classes)
+
 
 
     elif args.action == "validate":
