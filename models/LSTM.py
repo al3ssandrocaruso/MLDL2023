@@ -5,9 +5,9 @@ from torch.autograd import Variable
 import numpy as np
 
 
-class LSTMClassifier(nn.Module):
+class LSTM(nn.Module):
     def __init__(self, num_classes=8, input_size=1024, hidden_size=256, num_layers=1):
-        super(LSTMClassifier, self).__init__()
+        super(LSTM, self).__init__()
         self.num_classes = num_classes
         self.input_size = input_size
         self.num_layers = num_layers
