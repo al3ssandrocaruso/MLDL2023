@@ -44,7 +44,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
         self.additional_info = additional_info
 
         # creation of the pickle file name considering the split and the modality (e.g. D1 + _ + test + .pkl)
-        if self.mode == "train":
+        if self.mode == "train" or self.mode == "val":
             pickle_name = split + "_train.pkl"
         elif kwargs.get('save', None) is not None:
             pickle_name = split + "_" + kwargs["save"] + ".pkl"
