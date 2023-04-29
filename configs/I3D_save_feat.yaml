@@ -3,6 +3,11 @@ name: saved_feat_I3D
 split: test
 resume_from: ???
 
+# da rand a lin space
+# num_frames_per_clip 5,10,25,16
+# D1_test and D1_train
+# so 8 files and uniform and dense => 16 tot
+
 save:
   num_clips: 5
   dense_sampling:

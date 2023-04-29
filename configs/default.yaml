@@ -17,7 +17,7 @@ train:
   dense_sampling: # sampling version adopted in training for each modality
     RGB: True
   num_frames_per_clip: # number of frames adopted in training for each modality
-    RGB: 16
+    RGB: 5
 
 test:
   num_clips: 5 # number of clips in testing

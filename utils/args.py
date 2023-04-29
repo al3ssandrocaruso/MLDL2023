@@ -27,8 +27,8 @@ def add_paths():
 conf_path = os.path.join(os.path.dirname(__file__), '../configs')
 
 # Retrieve the default config
-# args = OmegaConf.load(os.path.join(conf_path, "default.yaml"))
-args = OmegaConf.load(os.path.join(conf_path, "custom.yaml"))
+args = OmegaConf.load(os.path.join(conf_path, "default.yaml"))
+#args = OmegaConf.load(os.path.join(conf_path, "custom.yaml"))
 
 # Read the cli args
 cli_args = OmegaConf.from_cli()
