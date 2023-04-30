@@ -86,7 +86,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
 
             # randomly sample N central points
             #central_points = sorted(np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False))
-            central_points = np.linspace(central_min, central_max, num=self.num_clips + 1, dtype=int)
+            central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
 
             # generate clips
             if clip_length % 2 == 0:
@@ -121,7 +121,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             central_max = end_frame - clip_length // 2
 
             # randomly sample N central points
-            central_points = np.linspace(central_min, central_max, num=self.num_clips + 1, dtype=int)
+            central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
 
             # generate clips
             if clip_length % 2 == 0:
