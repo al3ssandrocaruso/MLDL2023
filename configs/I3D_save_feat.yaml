@@ -11,9 +11,9 @@ resume_from: ???
 save:
   num_clips: 5
   dense_sampling:
-    RGB: True
+    RGB: False
   num_frames_per_clip:
-    RGB: 16
+    RGB: 25
 
 dataset:
   annotations_path: train_val
