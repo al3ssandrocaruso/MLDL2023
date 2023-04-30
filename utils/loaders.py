@@ -76,7 +76,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
     def _get_train_indices(self, record, modality='RGB'):
         output = []
         if modality == 'RGB':
-
+#a
             clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
 
             start_frame = int(record.start_frame)
