@@ -51,6 +51,14 @@ class EpicKitchensDataset(data.Dataset, ABC):
         else:
             pickle_name = split + "_test.pkl"
 
+        if self.dense_sampling == True:
+            pickle_name = "dense_" + pickle_name
+        else:
+            pickle_name = "uniform_" + pickle_name
+
+        pickle_name = "num_frames_"+str(self.num_frames_per_clip)+"_"+pickle_name
+        pickle_name = "num_clips_" + str(self.num_clips) + "_" + pickle_name
+
         # get the pickle file location (path + name). The path must be inserted in dataset_conf.annotations_path
         self.list_file = pd.read_pickle(os.path.join(self.dataset_conf.annotations_path, pickle_name))
         logger.info(f"Dataloader for {split}-{self.mode} with {len(self.list_file)} samples generated")
