@@ -15,16 +15,16 @@ train:
   eval_freq: 50 # evaluation frequency
   num_clips: 5 # clips adopted in training
   dense_sampling: # sampling version adopted in training for each modality
-    RGB: True
+    RGB: False
   num_frames_per_clip: # number of frames adopted in training for each modality
-    RGB: 10
+    RGB: 16
 
 test:
   num_clips: 5 # number of clips in testing
   dense_sampling: # sampling version adopted in test for each modality
-    RGB: True
+    RGB: False
   num_frames_per_clip: # number of frames adopted in test for each modality
-    RGB: 10
+    RGB: 16
 
 dataset:
   annotations_path: train_val # path for the annotations data
