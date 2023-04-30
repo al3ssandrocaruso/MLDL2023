@@ -22,7 +22,7 @@ train:
 test:
   num_clips: 5 # number of clips in testing
   dense_sampling: # sampling version adopted in test for each modality
-    RGB: True
+    RGB: False
   num_frames_per_clip: # number of frames adopted in test for each modality
     RGB: 5
 
