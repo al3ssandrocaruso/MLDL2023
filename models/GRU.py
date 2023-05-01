@@ -19,6 +19,7 @@ class GRU(nn.Module):
     def forward(self, x):
         h_0 = torch.zeros(self.num_layers, self.hidden_size)  # hidden state
         h_0.to('cuda:0')
+        h_0.cuda()
         # c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # internal state
         # output from lstm network
         out, hn = self.gru(x, h_0)  # lstm with input, hidden, and internal state
