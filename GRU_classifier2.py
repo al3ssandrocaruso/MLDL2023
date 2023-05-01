@@ -16,7 +16,7 @@ import wandb
 
 # global variables among training functions
 training_iterations = 50
-modalities = ["RGB"]
+modalities = None
 np.random.seed(13696641)
 torch.manual_seed(13696641)
 

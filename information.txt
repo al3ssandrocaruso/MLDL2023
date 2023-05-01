@@ -57,4 +57,5 @@ This file contains a general description of the project
     - video_record
         Contains the class VideoRecord used for video record
 
-       miao
+MEMO
+1. We take the last checkpoint using the most recent directory (look at Task.py line 82)
