@@ -18,9 +18,9 @@ class GRU(nn.Module):
 
     def forward(self, x):
         h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # hidden state
-        c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # internal state
+        # c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # internal state
         # output from lstm network
-        out, states = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
+        out, hn = self.gru(x, h_0)  # lstm with input, hidden, and internal state
         #out, (hn, cn) = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
         # hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
         out = self.relu(out)
