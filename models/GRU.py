@@ -22,7 +22,7 @@ class GRU(nn.Module):
         # output from lstm network
         out, hn = self.gru(x, h_0)  # lstm with input, hidden, and internal state
         #out, (hn, cn) = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
-        # hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
+        hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
         out = self.relu(out)
         out = self.fc1(out)
         out = self.relu(out)
