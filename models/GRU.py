@@ -20,11 +20,12 @@ class GRU(nn.Module):
         h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # hidden state
         c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # internal state
         # output from lstm network
-        out, (hn, cn) = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
-        hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
+        out, states = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
+        #out, (hn, cn) = self.gru(x, (h_0, c_0))  # lstm with input, hidden, and internal state
+        # hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
         out = self.relu(out)
         out = self.fc1(out)
         out = self.relu(out)
         out = self.fc2(out)
 
-        return out, (hn, cn)
+        return out
