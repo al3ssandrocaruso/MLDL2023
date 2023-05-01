@@ -12,7 +12,7 @@ class GRU(nn.Module):
         self.input_size = input_size
         self.num_layers = num_layers
         self.hidden_size = hidden_size
-        self.GRU = nn.GRU(input_size=self.input_size, hidden_size=self.hidden_size, num_layers=self.num_layers)
+        self.gru = nn.GRU(input_size=self.input_size, hidden_size=self.hidden_size, num_layers=self.num_layers)
         self.fc1 = nn.Linear(self.hidden_size, 128)
         self.fc2 = nn.Linear(128, self.num_classes)
 
