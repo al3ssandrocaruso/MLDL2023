@@ -17,7 +17,7 @@ class GRU(nn.Module):
         self.fc2 = nn.Linear(128, self.num_classes)
 
     def forward(self, x):
-        h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # hidden state
+        h_0 = Variable(torch.zeros(self.num_layers, self.hidden_size))  # hidden state
         # c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))  # internal state
         # output from lstm network
         out, hn = self.gru(x, h_0)  # lstm with input, hidden, and internal state
