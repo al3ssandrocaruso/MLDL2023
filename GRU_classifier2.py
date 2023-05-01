@@ -78,7 +78,15 @@ def main():
                                                                        None, load_feat=True),
                                                    batch_size=args.batch_size, shuffle=True,
                                                    num_workers=args.dataset.workers, pin_memory=True, drop_last=True)
-        train(action_classifier, train_loader, device, action_classifier.current_iter, num_classes)
+
+        val_loader = torch.utils.data.DataLoader(EpicKitchensDataset(args.dataset.shift.split("-")[-1], modalities,
+                                                                     'val', args.dataset, None, None, None,
+                                                                     None, load_feat=True),
+                                                 batch_size=args.batch_size, shuffle=False,
+                                                 num_workers=args.dataset.workers, pin_memory=True, drop_last=False)
+
+        train(action_classifier, train_loader, val_loader, device, num_classes)
+
 
 
 
