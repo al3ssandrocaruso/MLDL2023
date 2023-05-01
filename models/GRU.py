@@ -15,6 +15,7 @@ class GRU(nn.Module):
         self.gru = nn.GRU(input_size=self.input_size, hidden_size=self.hidden_size, num_layers=self.num_layers)
         self.fc1 = nn.Linear(self.hidden_size, 128)
         self.fc2 = nn.Linear(128, self.num_classes)
+        self.relu = nn.ReLU()
 
     def forward(self, x):
         # h_0 = torch.zeros(self.num_layers, self.hidden_size)  # hidden state
