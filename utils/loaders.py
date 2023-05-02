@@ -215,8 +215,6 @@ class EpicKitchensDataset(data.Dataset, ABC):
                     img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(max_idx_video))) \
                         .convert('RGB')
                 else:
-                    img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed-1))) \
-                        .convert('RGB')
                     raise FileNotFoundError
             return [img]
 
