@@ -203,11 +203,9 @@ class EpicKitchensDataset(data.Dataset, ABC):
             # here the offset for the starting index of the sample is added
 
             idx_untrimmed = record.start_frame + idx
-            print("AAAAA"+print(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed))))
             try:
                 img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed))) \
                     .convert('RGB')
-                print(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed)))
             except FileNotFoundError:
                 print("Img not found")
                 max_idx_video = int(sorted(glob.glob(os.path.join(data_path,
@@ -217,6 +215,8 @@ class EpicKitchensDataset(data.Dataset, ABC):
                     img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(max_idx_video))) \
                         .convert('RGB')
                 else:
+                    img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed-1))) \
+                        .convert('RGB')
                     raise FileNotFoundError
             return [img]
 
