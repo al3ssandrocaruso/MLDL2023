@@ -203,6 +203,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             # here the offset for the starting index of the sample is added
 
             idx_untrimmed = record.start_frame + idx
+            print("AAAAA"+print(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed))))
             try:
                 img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed))) \
                     .convert('RGB')
