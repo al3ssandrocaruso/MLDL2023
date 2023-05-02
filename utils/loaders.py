@@ -206,6 +206,7 @@ class EpicKitchensDataset(data.Dataset, ABC):
             try:
                 img = Image.open(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed))) \
                     .convert('RGB')
+                print(os.path.join(data_path, record.untrimmed_video_name, tmpl.format(idx_untrimmed)))
             except FileNotFoundError:
                 print("Img not found")
                 max_idx_video = int(sorted(glob.glob(os.path.join(data_path,
