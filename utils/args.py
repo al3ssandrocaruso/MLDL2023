@@ -55,6 +55,7 @@ if args.action != "train":
     else:
         args.logname = args.logname + "_" + args.dataset.shift + ".log"
     args.logfile = os.path.join(args.log_dir, args.logname)
+
 else:
     args.log_dir = os.path.join('Experiment_logs', args.experiment_dir)
     args.logfile = os.path.join(args.log_dir, args.action + ".log")
