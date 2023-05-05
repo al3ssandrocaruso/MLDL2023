@@ -73,15 +73,22 @@ class ActionRecognition(tasks.Task, ABC):
         """
         logits = {}
         features = {}
-        for i_m, m in enumerate(self.modalities):
-            logits[m], feat = self.task_models[m](x=data[m], **kwargs)
-            if i_m == 0:
+        flag = 0
+        if flag==0:
+            for i_m, m in enumerate(self.modalities):
+                logits[m], feat = self.task_models[m](x=data[m], **kwargs)
+                if i_m == 0:
+                    for k in feat.keys():
+                        features[k] = {}
                 for k in feat.keys():
-                    features[k] = {}
-            for k in feat.keys():
-                features[k][m] = feat[k]
+                    features[k][m] = feat[k]
+            return logits, features
+        else:
+            for i_m, m in enumerate(self.modalities):
+                logits[m], feat = self.task_models[m](x=data[m], **kwargs)
+            return logits
 
-        return logits, features
+
 
     def compute_loss(self, logits: Dict[str, torch.Tensor], label: torch.Tensor, loss_weight: float=1.0):
         """Fuse the logits from different modalities and compute the classification loss.
