@@ -110,34 +110,30 @@ def main():
                 index = i + 1
                 label = activities_labels[i]
 
-                # LEFT myo
+                # # LEFT myo
                 emg_data_left, emg_time_s_left = extract_myo_data("myo-left", h5_file)
+                # indexes
                 emg_indexes_forLabel_left = np.where((emg_time_s_left >= label_start_time_s) & (emg_time_s_left <= label_end_time_s))[0]
+                # raw data
                 emg_data_forLabel_left = emg_data_left[emg_indexes_forLabel_left, :]
-                # Absolute value
-                emg_data_forLabel_left = np.abs(emg_data_forLabel_left)
-                # Overall Activation Level
-                emg_data_forLabel_left = np.sum(emg_data_forLabel_left, axis=1)
                 # timestamps
                 emg_time_s_forLabel_left = emg_time_s_left[emg_indexes_forLabel_left]
 
-                # RIGHT myo
+                # # RIGHT myo
                 emg_data_right, emg_time_s_right = extract_myo_data("myo-right", h5_file)
+                # indexes
                 emg_indexes_forLabel_right = np.where((emg_time_s_right >= label_start_time_s) & (emg_time_s_right <= label_end_time_s))[0]
+                # raw data
                 emg_data_forLabel_right = emg_data_right[emg_indexes_forLabel_right, :]
-                # Absolute Value
-                emg_data_forLabel_right = np.abs(emg_data_forLabel_right)
-                # Overall Activation Level
-                emg_data_forLabel_right = np.sum(emg_data_forLabel_right, axis=1)
                 # timestamps
                 emg_time_s_forLabel_right = emg_time_s_right[emg_indexes_forLabel_right]
 
                 pkl_dict[index] = {
                     "index": index,
                     "label": label,
-                    "myo-left-activation": emg_data_forLabel_left,
+                    "myo-left-data": emg_data_forLabel_left,
                     "myo-left-timestamps": emg_time_s_forLabel_left,
-                    "myo-right-activation": emg_data_forLabel_right,
+                    "myo-right-data": emg_data_forLabel_right,
                     "myo-right-timestamps": emg_time_s_forLabel_right,
                     "start_time": label_start_time_s,
                     "end_time": label_end_time_s,
@@ -154,4 +150,5 @@ def main():
             pickle.dump(pkl_dict, open(str(output_path + "_parsed_EMG" + ".pkl"), "wb"))
 
 
-main()
+if __name__ == "__main__":
+    main()

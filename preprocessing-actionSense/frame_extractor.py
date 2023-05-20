@@ -1,39 +1,67 @@
 import os
-import re
+import pickle
+import subprocess
+import numpy as np
 
-import cv2
+# Specify the paths
+input_pickle_dir= "./parsed_FRAMES"
+output_folder_dir = "C:/Users/bracc/Desktop/avi_files/images"
+input_video_path = 'C:/Users/bracc/Desktop/avi_files/2022-06-14_16-38-43_S04_eye-tracking-video-world_frame.mp4'
 
-dir_im = "C:/Users/bracc/Desktop/avi_files/images"
-video_file = 'C:/Users/bracc/Desktop/avi_files/2022-06-14_16-38-43_S04_eye-tracking-video-worldGaze_frame.avi'
+"""
+Extract frame indexes for every action, append to a list
+"""
+clip_frames = []
+# Process each file in the input_pickle_path directory
+for parsed_emg_filename in os.listdir(input_pickle_dir):
+    parsed_emg_filepath = os.path.join(input_pickle_dir, parsed_emg_filename)
+    if os.path.isfile(parsed_emg_filepath):
+        with open(parsed_emg_filepath, 'rb') as parsed_emg:
+            for emg_index, emg_dict in pickle.load(parsed_emg).items():
+                clip_frames.append(list(emg_dict['frames-indexes-array']))
 
-import cv2
-import os
-
-# specify the paths
-input_video_path = "/path/to/input/video.avi"
-output_folder_path = "/path/to/output/folder"
-
-# specify the clips to extract
-clip_frames = [[10, 20, 30], [50, 60, 70, 80], [100, 110]]
-
-# create output folders for each clip
+"""
+Create output folders for each clip
+"""
 for i in range(len(clip_frames)):
-    clip_folder_path = os.path.join(output_folder_path, f"clip_{i+1}")
+    clip_folder_path = os.path.join(output_folder_dir, f"S04_{i + 1}")
     os.makedirs(clip_folder_path, exist_ok=True)
 
-# extract the frames for each clip and save them in the corresponding folder
-cap = cv2.VideoCapture(input_video_path)
-frame_index = 0
-clip_index = 0
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
-    if frame_index in clip_frames[clip_index]:
-        clip_folder_path = os.path.join(output_folder_path, f"clip_{clip_index+1}")
-        output_path = os.path.join(clip_folder_path, f"frame_{frame_index}.png")
-        cv2.imwrite(output_path, frame)
-    frame_index += 1
-    if frame_index == clip_frames[clip_index][-1] + 1:
-        clip_index += 1
-cap.release()
+def extract_frames(output_folder, frame_indices, input_video):
+    """
+    EXTRACT and SAVE frames
+    Args:
+        output_folder: folder to save every frame
+        frame_indices: (list of int), frames we want to extract
+        input_video: path to MP4 video, constant
+    """
+    # Create the output folder if it doesn't exist
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Generate the select filter expression
+    select_expression = '+'.join([f'eq(n,{index})' for index in frame_indices])
+
+    # Construct the FFmpeg command
+    command = [
+        'ffmpeg',
+        '-i', input_video,
+        '-vf', f'select=\'{select_expression}\',setpts=N/FRAME_RATE/TB',
+        os.path.join(output_folder, f'frame_%010d.png')
+    ]
+
+    print(command)
+
+    # Execute the command
+    # subprocess.run(["cmd.exe", "echo", "ciao"])
+    subprocess.run(command)
+
+
+# Example usage
+output_folder_path = os.path.join(output_folder_dir, "first_try")
+print(output_folder_path)
+
+partitions = np.array_split(clip_frames[0], 5)
+for partition in partitions[:1]:
+    partition = list(partition)
+    print(partition)
+    extract_frames(output_folder_path, frame_indices=partition, input_video=input_video_path)
