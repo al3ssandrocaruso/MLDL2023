@@ -4,10 +4,8 @@ the structure of the pickle file is a DICTIONARY with key=INDEX and value a DICT
 { index:{
         "index": index of the action: given to match index in the pkl files in action-net folder
         "label": label of the action,
-        "myo-left-data": LEFT arm DATA: np.array of shape=(n,8); n=depends on the length of the action, 8=#channels
-        "myo-left-timestamps": np.array of shape=(n,); timestamp of each measurement
-        "myo-right-data": RIGHT arm DATA: shape=(m,8); LEFT AND RIGHT SHAPES ARE DIFFERENT
-        "myo-right-timestamps": np.array of shape=(m,)
+        "frames-indexes-array": array of integers
+        "frames-timestamps-array": array of timestamps
         "start_time": start time in [s] of the activity
         "end_time": end time in [s] of the activity
         "duration": duration in seconds [s]
@@ -123,9 +121,9 @@ def main():
             ####################################################
             out_dir = "parsed_FRAMES"
             base_name = os.path.basename(h5_filepath)  # get the filename component of the path
-            output_path = os.path.join(out_dir, os.path.splitext(base_name)[0].split('_')[-1])
+            output_path = os.path.join(out_dir, os.path.splitext(base_name)[0].split('_')[-1] + "_parsed_FRAMES.pkl")
 
-            pickle.dump(pkl_dict, open(str(output_path + "_parsed_FRAMES" + ".pkl"), "wb"))
+            pickle.dump(pkl_dict, open(output_path, "wb"))
 
 
 main()

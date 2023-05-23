@@ -19,7 +19,18 @@ for parsed_emg_filename in os.listdir(input_pickle_dir):
         with open(parsed_emg_filepath, 'rb') as parsed_emg:
             for emg_index, emg_dict in pickle.load(parsed_emg).items():
                 clip_frames.append(list(emg_dict['frames-indexes-array']))
+print(clip_frames)
 
+def count_elements(lst):
+    count = 0
+    for sub_list in lst:
+        count += len(sub_list)
+    return count
+
+total_elements = count_elements(clip_frames)
+print(total_elements)
+
+exit(0)
 """
 Create output folders for each clip
 """

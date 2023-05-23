@@ -37,10 +37,6 @@ def extract_myo_data(left_right, h5_file):
     emg_time_s = np.squeeze(
         np.array(emg_time_s))  # squeeze (optional) converts from a list of single-element lists to a 1D list
 
-    # # Get the timestamps for each row as human-readable strings.
-    # emg_time_str = h5_file[device_name][stream_name]['time_str']
-    # emg_time_str = np.squeeze(np.array(emg_time_str)) # squeeze (optional) converts from a list of single-element lists to a 1D list
-
     return emg_data, emg_time_s
 
 def extract_labels(hdf5_file_path):
@@ -107,7 +103,7 @@ def main():
                 label_start_time_s = activities_start_times_s[i]
                 label_end_time_s = activities_end_times_s[i]
                 duration = label_end_time_s - label_start_time_s
-                index = i + 1
+                index = i
                 label = activities_labels[i]
 
                 # # LEFT myo
@@ -145,9 +141,9 @@ def main():
             ####################################################
             out_dir = "parsed_EMG"
             base_name = os.path.basename(h5_filepath)  # get the filename component of the path
-            output_path = os.path.join(out_dir, os.path.splitext(base_name)[0].split('_')[-1])
+            output_path = os.path.join(out_dir, os.path.splitext(base_name)[0].split('_')[-1] + "_parsed_EMG.pkl")
 
-            pickle.dump(pkl_dict, open(str(output_path + "_parsed_EMG" + ".pkl"), "wb"))
+            pickle.dump(pkl_dict, open(output_path, "wb"))
 
 
 if __name__ == "__main__":

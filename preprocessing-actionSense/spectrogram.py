@@ -3,6 +3,8 @@ comments from notebook:
 # Sampling frequency is 160 Hz
 # With 32 samples the frequency resolution after FFT is 160 / 32
 """
+import os
+import pickle
 
 import torch
 import torchaudio
@@ -11,26 +13,22 @@ import torchaudio.transforms as T
 import numpy as np
 import pandas as pd
 import librosa
+from librosa import feature
 import matplotlib.pyplot as plt
 
 
 def plot_spectrogram(specgram, title=None, ylabel="freq_bin"):
     fig, axs = plt.subplots(len(specgram), 1, figsize=(16, 8))
-
     axs[0].set_title(title or "Spectrogram (db)")
-
     for i, spec in enumerate(specgram):
         im = axs[i].imshow(librosa.power_to_db(specgram[i]), origin="lower", aspect="auto")
         axs[i].get_xaxis().set_visible(False)
         axs[i].get_yaxis().set_visible(False)
-
     axs[i].set_xlabel("Frame number")
     axs[i].get_xaxis().set_visible(True)
     plt.show(block=False)
 
-"""
-If you want to use TORCHAUDIO uncomment this and comment the function below
-"""
+
 # n_fft = 32
 # win_length = None
 # hop_length = 4
@@ -44,79 +42,92 @@ If you want to use TORCHAUDIO uncomment this and comment the function below
 #     normalized=True
 # )
 
-# def spectrogram(channel):
-#     n_fft = 32
-#     win_length = None
-#     hop_length = 4
-#     return librosa.stft(
-#         y=channel,
-#         n_fft=n_fft,
-#         hop_length=hop_length,
-#         win_length=win_length,
-#         center=True,
-#         pad_mode="reflect"
-#     )
+n_fft = 32
+win_length = None
+hop_length = 4
+mel_spectrogram = T.MelSpectrogram(
+    n_mels=10,
+    sample_rate=160,
+    n_fft=n_fft,
+    win_length=win_length,
+    hop_length=hop_length,
+    center=True,
+    pad_mode="reflect",
+    power=2.0,
+    normalized=True,
+    f_min=0,
+    f_max=80
+)
 
-def spectrogram(channel):
-    sr = 160
-    end_freq = 5
-    start_freq = 0
-    # Compute the corresponding number of FFT bins
-    n_fft = int(sr / end_freq) * 2  # Choose a suitable value based on the highest frequency of interest
-    # Compute the corresponding window length
-    # win_length = int(sr / start_freq) * 2  # Choose a suitable value based on the lowest frequency of interest
-
-    return librosa.stft(
-        y=channel,
-        n_fft=n_fft,
-        # win_length=win_length
-    )
 
 
 def compute_spectrogram(signal, title):
-    # if one single channel is passed (activation)
-    if len(signal.shape) == 1:
-        freq_signal = spectrogram(signal)
-
-        # Plot the spectrogram
-        plt.figure(figsize=(16, 8))
-        librosa.display.specshow(freq_signal, sr=160, x_axis='time', y_axis='log')
-        plt.colorbar(format='%+2.0f dB')
-        plt.title(title)
-        plt.show()
-
-    else:
+    """
+    outputs:
+        freq_signal = list of 8 Tensors (one arm at a time)
+    """
+    if True:
         # how many channels do we have (should always be 8)
         n_channels = signal.shape[1]
         # list of n_channels spectrograms (2D np.array)
-        freq_signal = [spectrogram(signal[:, i]) for i in range(n_channels)]
-        print("Freq size", freq_signal[0].shape)
-        plot_spectrogram(freq_signal, title=title)
+        freq_signal = [mel_spectrogram(torch.Tensor(signal[:, i])) for i in range(n_channels)]
+
+        # plot_spectrogram(freq_signal, title=title)
 
     return freq_signal
 
 
 
-def main():
-    # Replace with your path to one of the subjects from Action-Net
-    emg_annotations = pd.read_pickle("./preprocessed_EMG/S04_EMG.pkl")
+def spectrogram_main(input_file, output_file, isSubaction):
+    with open(input_file, 'rb') as preprocessed_emg:
+        pkl_dict = dict()
+        for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
+            signal_left = pre_dict['preprocessed-left-data']
+            signal_right = pre_dict['preprocessed-right-data']
+            label = pre_dict['label']
+            left_right_append = list()
 
-    # extract signal from pickle file
-    sample_no = 1
-    signal = emg_annotations[1]['preprocessed_activation_left']
-    # signal = emg_annotations[1]['myo-left-data']
-    title = emg_annotations[1]['label']
 
-    # needed to compute spectrograms
-    signal = signal.astype(float)
+            # # LEFT
+            # needed to compute spectrograms
+            signal_left = signal_left.astype(float)
+            # compute and plot spectrograms
+            spect_left = compute_spectrogram(signal_left, label)
 
-    # compute and plot spectrograms, freq_spect is a list of 1 (only activation) or 8 (all channels) spectrograms
-    freq_signal = compute_spectrogram(signal, title)
-    for i in range(len(freq_signal)):
-        freq_signal[i] = librosa.stft
-    print(freq_signal)
+            # # RIGHT
+            # needed to compute spectrograms
+            signal_right = signal_right.astype(float)
+            # compute and plot spectrograms
+            spect_right = compute_spectrogram(signal_right, label)
+
+            # append left and right spectrogram to final list
+            left_right_append.extend(spect_left)
+            left_right_append.extend(spect_right)
+
+            # save new dict
+            if isSubaction:
+                pkl_dict[pre_index] = {
+                    "index": pre_index,
+                    "label": pre_dict["label"],
+                    "spectrograms-list": left_right_append,
+                    "frames-sub_indexes-array": pre_dict["frames-sub_indexes-array"]
+
+                }
+            else:
+                pkl_dict[pre_index] = {
+                    "index": pre_index,
+                    "label": pre_dict["label"],
+                    "spectrograms-list": left_right_append,
+                }
+
+        # SAVE dictionary in pickle file
+        pickle.dump(pkl_dict, open(str(output_file + ".pkl"), "wb"))
 
 
 if __name__ == "__main__":
-    main()
+    # NO SUBACTION -> we are running directly from spectrogram
+    input_file = "./preprocessed_EMG/S04_EMG.pkl"
+    out_dir = "spectrogram_EMG"
+    output_path = os.path.join(out_dir, "S04_spectrogram")
+    spectrogram_main(input_file, output_path, isSubaction=False)
 
