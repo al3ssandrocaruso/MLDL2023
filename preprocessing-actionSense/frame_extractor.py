@@ -2,26 +2,59 @@ import numpy as np
 import os
 import shutil
 import pickle
+from PIL import Image
 
-########################################################################################################################################
 arrays_of_indices_in = []
-# with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocessed_emg:
-#     for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
-#         frames_sub_indexes = pre_dict["frames-sub_indexes-array"]
-#         label = pre_dict["label"]
-#         arrays_of_indices_in.append(frames_sub_indexes)
-#         print(pre_index)
-#         print()
-# print(arrays_of_indices_in)
+with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocessed_emg:
+    for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
+        frames_sub_indexes = pre_dict["frames-sub_indexes-array"]
+        arrays_of_indices_in.append(frames_sub_indexes)
+
+#print(arrays_of_indices_in)
+
 
 # Specify the path to the directory where the frames are extracted
-frames_directory_in = "C:\\Users\\bracc\\Desktop\\2008_graz"
-frames_directory_out = "MIAO"
-########################################################################################################################################
+frames_directory_in = "/Users/alessandrocaruso/Downloads"
+frames_directory_out = "/Users/alessandrocaruso/Downloads/frames"
+
+
+def stretch_image(image_path, new_width, new_height):
+    # Open the image file
+    image = Image.open(image_path)
+
+    # Resize the image using the scaling factors and NEAREST resampling
+    stretched_image = image.resize((new_width, new_height), Image.LANCZOS)
+
+    # Return the stretched image
+    return stretched_image
+def resize_images_in_folder(folder_path, new_width, new_height):
+    count=0
+    # Iterate through all files and subdirectories in the folder
+    for root, _, files in os.walk(folder_path):
+        if(root=="/Users/alessandrocaruso/Downloads/frames"): continue
+        count+=1
+        for file in files:
+            # Check if the file is an image
+            if file.endswith(('.jpg', '.jpeg', '.png')):
+                # Get the file path
+                file_path = os.path.join(root, file)
+
+                # Resize the frame while maintaining the center
+                resized_frame = stretch_image(file_path, new_width, new_height)
+
+                # Delete the original file
+                os.remove(file_path)
+
+                # Save the resized frame in the same folder
+                resized_frame.save(file_path)
+        print("iteration: ", count, "\nsubdir: ", root)
+
+resize_images_in_folder(frames_directory_out, 456, 256)
+
 def move_frames(out_dir=frames_directory_out, frames_directory=frames_directory_in, arrays_of_indices=arrays_of_indices_in):
     # create list for all filenames
     all_filenames = []
-    for array_of_index in arrays_of_indices[:1]:
+    for array_of_index in arrays_of_indices:
         filenames = ["frame_%010d.png" % index for index in array_of_index]
 
         all_filenames.append(filenames)
@@ -41,67 +74,8 @@ def move_frames(out_dir=frames_directory_out, frames_directory=frames_directory_
     #
     # COPY OR MOVE
     #
-            # shutil.move(source_path, destination_path)
-            shutil.copy(source_path, out_destination_path)
+            shutil.move(source_path, out_destination_path)
+            #shutil.copy(source_path, out_destination_path)
 
             # print(f"Moved {filename} to {out_folder_name}")
 
-# move_frames()
-########################################################################################################################################
-import os
-import cv2
-
-def resize_with_center(frame, new_width, new_height):
-    # Get the original frame dimensions
-    height, width = frame.shape[:2]
-
-    # Calculate the center coordinates of the original frame
-    center_x = width // 2
-    center_y = height // 2
-
-    # Calculate the starting and ending coordinates for cropping
-    start_x = center_x - (new_width // 2)
-    end_x = start_x + new_width
-    start_y = center_y - (new_height // 2)
-    end_y = start_y + new_height
-
-    # Crop the frame using the calculated coordinates
-    cropped_frame = frame[start_y:end_y, start_x:end_x]
-
-    # Resize the cropped frame to the desired dimensions
-    resized_frame = cv2.resize(cropped_frame, (new_width, new_height))
-
-    return resized_frame
-
-def resize_images_in_folder(folder_path, new_width, new_height):
-    # Iterate through all files and subdirectories in the folder
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            # Check if the file is an image
-            if file.endswith(('.jpg', '.jpeg', '.png')):
-                # Get the file path
-                file_path = os.path.join(root, file)
-
-                # Load the input frame
-                input_frame = cv2.imread(file_path)
-
-                # Resize the frame while maintaining the center
-                resized_frame = resize_with_center(input_frame, new_width, new_height)
-
-                # # Delete the original file
-                # os.remove(file_path)
-
-                # Save the resized frame in the same folder
-                # cv2.imwrite(file_path, resized_frame)
-                # TEST
-                basename = file_path.split(".")[0]
-                basename = str(str(basename) + str("_resized"))
-                file_path = str(basename + ".png")
-                cv2.imwrite(file_path, resized_frame)
-        print("Fatto una volta")
-
-# Specify the path to the root folder containing subfolders with images
-root_folder_path = frames_directory_in
-
-# Resize images in all subfolders under the root folder
-resize_images_in_folder(root_folder_path, 456, 256)
