@@ -72,7 +72,7 @@ def compute_spectrogram(signal, title):
         # list of n_channels spectrograms (2D np.array)
         freq_signal = [mel_spectrogram(torch.Tensor(signal[:, i])) for i in range(n_channels)]
 
-        # plot_spectrogram(freq_signal, title=title)
+        plot_spectrogram(freq_signal, title=title)
 
     return freq_signal
 

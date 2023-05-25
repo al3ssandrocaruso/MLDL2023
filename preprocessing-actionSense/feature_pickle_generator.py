@@ -1,6 +1,10 @@
 import pickle
 import pandas
 
+
+
+
+
 ret_list = []
 with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocessed_emg:
     for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
@@ -22,11 +26,12 @@ with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocess
 
 df = pandas.DataFrame(ret_list)
 
+print(df)
 # pandas.to_pickle(df, "../train_val_as/D1_test.pkl", protocol=4)
 
 # WRITE to pickle
-with open("../train_val_as/D1_test.pkl", "wb") as f:
-    pickle.dump(df, f)
+# with open("../train_val_as/D1_test.pkl", "wb") as f:
+#     pickle.dump(df, f)
 
 # read data
 # with open(file="../train_val_as/D1_test.pkl", mode='rb') as f:

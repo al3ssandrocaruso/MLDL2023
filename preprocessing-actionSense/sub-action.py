@@ -132,7 +132,8 @@ def emg_timestamps(sub_action_dict, sub_timestamps_list):
                 # CUT or PAD left right to have same length
                 emg_left_sub_padded, emg_right_sub_padded = cut_and_pad(emg_left_sub=emg_left_sub_data,
                                                                         emg_right_sub=emg_right_sub_data)
-
+                print("emg_left_sub_padded", emg_left_sub_padded.shape)
+                print("emg_right_sub_padded", emg_right_sub_padded.shape)
                 pkl_dict[index] = {
                     "index": index,
                     "label": label,
