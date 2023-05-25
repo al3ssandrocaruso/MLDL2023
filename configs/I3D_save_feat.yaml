@@ -9,7 +9,7 @@ resume_from: ???
 # so 8 files and uniform and dense => 16 tot
 
 save:
-  num_clips: 5
+  num_clips: 10
   dense_sampling:
     RGB: True
   num_frames_per_clip:
