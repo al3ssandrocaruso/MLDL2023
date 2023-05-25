@@ -1,5 +1,5 @@
 from .video_record import VideoRecord
-
+import torch
 
 class EpicVideoRecord(VideoRecord):
     def __init__(self, tup, dataset_conf):
@@ -43,3 +43,5 @@ class EpicVideoRecord(VideoRecord):
         if 'verb_class' not in self._series.keys().tolist():
             raise NotImplementedError
         return self._series['verb_class']
+
+
