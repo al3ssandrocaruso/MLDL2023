@@ -5,14 +5,14 @@ import pickle
 
 ########################################################################################################################################
 arrays_of_indices_in = []
-with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocessed_emg:
-    for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
-        frames_sub_indexes = pre_dict["frames-sub_indexes-array"]
-        label = pre_dict["label"]
-        arrays_of_indices_in.append(frames_sub_indexes)
-        print(pre_index)
-        print()
-print(arrays_of_indices_in)
+# with open(file="./SUB_spectrogram/S04_spectrogram.pkl", mode='rb') as preprocessed_emg:
+#     for pre_index, pre_dict in pickle.load(preprocessed_emg).items():
+#         frames_sub_indexes = pre_dict["frames-sub_indexes-array"]
+#         label = pre_dict["label"]
+#         arrays_of_indices_in.append(frames_sub_indexes)
+#         print(pre_index)
+#         print()
+# print(arrays_of_indices_in)
 
 # Specify the path to the directory where the frames are extracted
 frames_directory_in = "C:\\Users\\bracc\\Desktop\\2008_graz"
@@ -88,14 +88,20 @@ def resize_images_in_folder(folder_path, new_width, new_height):
                 # Resize the frame while maintaining the center
                 resized_frame = resize_with_center(input_frame, new_width, new_height)
 
-                # Delete the original file
-                os.remove(file_path)
+                # # Delete the original file
+                # os.remove(file_path)
 
                 # Save the resized frame in the same folder
+                # cv2.imwrite(file_path, resized_frame)
+                # TEST
+                basename = file_path.split(".")[0]
+                basename = str(str(basename) + str("_resized"))
+                file_path = str(basename + ".png")
                 cv2.imwrite(file_path, resized_frame)
+        print("Fatto una volta")
 
 # Specify the path to the root folder containing subfolders with images
-root_folder_path = '/path/to/root/folder'
+root_folder_path = frames_directory_in
 
 # Resize images in all subfolders under the root folder
 resize_images_in_folder(root_folder_path, 456, 256)
