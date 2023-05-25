@@ -1,5 +1,5 @@
 from .video_record import VideoRecord
-
+import torch
 
 class EpicVideoRecord(VideoRecord):
     def __init__(self, tup, dataset_conf):
@@ -38,8 +38,15 @@ class EpicVideoRecord(VideoRecord):
                 'Event': int((self.end_frame - self.start_frame) / self.dataset_conf["Event"].rgb4e),
                 'Spec': self.end_frame - self.start_frame}
 
+    # @property
+    # def label(self):
+    #     if 'verb_class' not in self._series.keys().tolist():
+    #         raise NotImplementedError
+    #     return self._series['verb_class']
+
     @property
     def label(self):
         if 'verb_class' not in self._series.keys().tolist():
             raise NotImplementedError
-        return self._series['verb_class']
+        return torch.tensor(self._series['verb_class'])
+
