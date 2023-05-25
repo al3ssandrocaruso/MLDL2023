@@ -1,6 +1,6 @@
 action: save # train or test
 name: saved_feat_I3D
-split: train
+split: test
 resume_from: ???
 
 # da rand a lin space
