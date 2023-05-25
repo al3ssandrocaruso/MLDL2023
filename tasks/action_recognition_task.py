@@ -40,7 +40,7 @@ class ActionRecognition(tasks.Task, ABC):
         self.model_args = model_args
 
         # self.accuracy and self.loss track the evolution of the accuracy and the training loss
-        self.accuracy = utils.Accuracy(topk=(1, 5), classes=num_classes)
+        self.accuracy = utils.Accuracy(topk=(1, 4), classes=num_classes)
         self.loss = utils.AverageMeter()
         
         self.num_clips = num_clips
