@@ -4,6 +4,7 @@ from pathlib import Path
 import torch
 from abc import ABCMeta, abstractmethod
 from utils.logger import logger
+
 from typing import Dict, Optional
 
 
@@ -17,14 +18,14 @@ class Task(torch.nn.Module, metaclass=ABCMeta):
     """
 
     def __init__(
-        self,
-        name: str,
-        task_models: Dict[str, torch.nn.Module],
-        batch_size: int,
-        total_batch: int,
-        models_dir: str,
-        args,
-        **kwargs,
+            self,
+            name: str,
+            task_models: Dict[str, torch.nn.Module],
+            batch_size: int,
+            total_batch: int,
+            models_dir: str,
+            args,
+            **kwargs,
     ) -> None:
         """Create an instance of the Task class.
 
@@ -92,8 +93,8 @@ class Task(torch.nn.Module, metaclass=ABCMeta):
         """
         logger.info("Restoring {} for modality {} from {}".format(self.name, m, path))
 
-        checkpoint = torch.load(path)
-
+        # checkpoint = torch.load(path) #, map_location=torch.device('cpu')) (ADD IF YOU WANT TO RUN ON CPU ONLY)
+        checkpoint = torch.load(path, map_location=torch.device('cpu'))
         # Restore the state of the task
         self.current_iter = checkpoint["iteration"]
         self.best_iter = checkpoint["best_iter"]
@@ -101,9 +102,13 @@ class Task(torch.nn.Module, metaclass=ABCMeta):
         self.last_iter_acc = checkpoint["acc_mean"]
 
         # Restore the model parameters
+        # self.task_models[m].load_state_dict(checkpoint["model_state_dict"], strict=False)
         self.task_models[m].load_state_dict(checkpoint["model_state_dict"], strict=True)
+        print('ok')
         # Restore the optimizer parameters
-        self.optimizer[m].load_state_dict(checkpoint["optimizer_state_dict"])
+
+        # print("checkpoint optimizer state dict: ", checkpoint["optimizer_state_dict"]["state"].keys())?
+        # self.optimizer[m].load_state_dict(checkpoint["optimizer_state_dict"])
 
         try:
             self.model_count = checkpoint["last_model_count_saved"]
@@ -148,8 +153,8 @@ class Task(torch.nn.Module, metaclass=ABCMeta):
             model = list(
                 filter(
                     lambda x: m == x.name.split(".")[0].split("_")[-2]
-                    and self.name == x.name.split(".")[0].split("_")[-3]
-                    and str(idx) == x.name.split(".")[0].split("_")[-1],
+                              and self.name == x.name.split(".")[0].split("_")[-3]
+                              and str(idx) == x.name.split(".")[0].split("_")[-1],
                     last_models_dir,
                 )
             )[0].name
@@ -179,11 +184,10 @@ class Task(torch.nn.Module, metaclass=ABCMeta):
             model = list(
                 filter(
                     lambda x: m == x.name.split(".")[0].split("_")[-2]
-                    and self.name == x.name.split(".")[0].split("_")[-3],
+                              and self.name == x.name.split(".")[0].split("_")[-3],
                     saved_models,
                 )
             )[0].name
-
             model_path = os.path.join(last_models_dir, model)
             self.__restore_checkpoint(m, model_path)
 
