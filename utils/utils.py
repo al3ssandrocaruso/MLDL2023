@@ -50,10 +50,10 @@ def uniform_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip):
 
 
 def get_domains_and_labels(args):
-    # num_verbs = 20 for ActionSense
-    num_verbs = 8
-    # domains = {'D1': 20, 'D2': 1, 'D3': 22} for ActionSense
-    domains = {'D1': 8, 'D2': 1, 'D3': 22}
+    num_verbs = 20  #for ActionSense
+    #num_verbs = 8
+    domains = {'D1': 20, 'D2': 1, 'D3': 22} #for ActionSense
+    #domains = {'D1': 8, 'D2': 1, 'D3': 22}
     source_domain = domains[args.dataset.shift.split("-")[0]]
     target_domain = domains[args.dataset.shift.split("-")[1]]
     valid_labels = [i for i in range(num_verbs)]
