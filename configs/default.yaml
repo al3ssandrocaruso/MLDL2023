@@ -27,7 +27,7 @@ test:
     RGB: 16
 
 dataset:
-  annotations_path: train_val_as # path for the annotations data
+  annotations_path: train_val_as # train_val for EK
   shift: ??? # shifts of the dataset
   workers: 0 # number of workers for the dataloader
   stride: 1 # stride in case of dense sampling

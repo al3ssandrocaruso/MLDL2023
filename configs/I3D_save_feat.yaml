@@ -16,7 +16,7 @@ save:
     RGB: 16
 
 dataset:
-  annotations_path: train_val_as
+  annotations_path: train_val_as # train_val for EK
   shift: ???
   workers: 0
   stride: 1
