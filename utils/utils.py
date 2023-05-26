@@ -50,8 +50,10 @@ def uniform_sampling(start_frame_clip, end_frame_clip, num_frames_per_clip):
 
 
 def get_domains_and_labels(args):
-    num_verbs = 20
-    domains = {'D1': 20, 'D2': 1, 'D3': 22}
+    # num_verbs = 20 for ActionSense
+    num_verbs = 8
+    # domains = {'D1': 20, 'D2': 1, 'D3': 22} for ActionSense
+    domains = {'D1': 8, 'D2': 1, 'D3': 22}
     source_domain = domains[args.dataset.shift.split("-")[0]]
     target_domain = domains[args.dataset.shift.split("-")[1]]
     valid_labels = [i for i in range(num_verbs)]
@@ -62,7 +64,8 @@ def get_domains_and_labels(args):
 class Accuracy(object):
     """Computes and stores the average and current value of different top-k accuracies from the outputs and labels"""
 
-    def __init__(self, topk=(1,), classes=20):
+    def __init__(self, topk=(1,), classes=8):
+        # for ActionSense put num classes =8
         assert len(topk) > 0
         self.topk = topk
         self.classes = classes
