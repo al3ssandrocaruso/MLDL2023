@@ -13,7 +13,7 @@ save:
   dense_sampling:
     RGB: True
   num_frames_per_clip:
-    RGB: 5
+    RGB: 10
 
 dataset:
   annotations_path: train_val
