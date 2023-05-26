@@ -11,9 +11,9 @@ resume_from: /content/drive/MyDrive/checkpoints/I3D_SourceOnlyD1
 save:
   num_clips: 5
   dense_sampling:
-    RGB: True
+    RGB: False
   num_frames_per_clip:
-    RGB: 25
+    RGB: 5
 
 dataset:
   annotations_path: train_val
