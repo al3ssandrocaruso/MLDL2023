@@ -74,76 +74,134 @@ class EpicKitchensDataset(data.Dataset, ABC):
             self.model_features = pd.merge(self.model_features, self.list_file, how="inner", on="uid")
 
     def _get_train_indices(self, record, modality='RGB'):
-        output = []
-        if modality == 'RGB':
-#a
-            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
+        ##################################################################
+        # TODO: implement sampling for training mode                     #
+        # Give the record and the modality, this function should return  #
+        # a list of integers representing the frames to be selected from #
+        # the video clip.                                                #
+        # Remember that the returned array should have size              #
+        #           num_clip x num_frames_per_clip                       #
+        ##################################################################
 
-            start_frame = int(record.start_frame)
-            end_frame = int(record.end_frame)
-            central_min = start_frame + clip_length // 2
-            central_max = end_frame - clip_length // 2
+        tot_frames = record.num_frames[modality]
+        n_centroids = self.num_clips
+        n_frames = self.num_frames_per_clip[modality]
 
-            # randomly sample N central points
-            #central_points = sorted(np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False))
-            central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
+        sub = []
+        for i in range(1, n_centroids + 1):
+            centr_pos = int(i * tot_frames / (n_centroids + 1))
+            sub.append(range(centr_pos - int(n_frames / 2), centr_pos + int(n_frames / 2)))
 
-            # generate clips
-            if clip_length % 2 == 0:
-                clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
-            else:
-                clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+        # raise NotImplementedError("You should implement _get_val_indices")
 
-            if bool(self.dense_sampling.RGB) == False:  # uniform sampling
-                for clip in clips:
-                    frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
-                    frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
-                    output.extend(frames)
+        ret = np.array(sub).flatten()
 
-            else:  # dense sampling
-                for clip in clips:
-                    output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+        if not ret.size == self.num_clips * n_frames:
+            raise UserWarning(f"Invalid number of frames: it is {ret.size}, should be {self.num_clips * n_frames}")
 
-            # subtract the start_frame from each element in the list
-            output = [x - start_frame for x in output]
+        return ret
+        # raise NotImplementedError("You should implement _get_train_indices")
 
-        return output
+    def _get_val_indices(self, record, modality):
+        ##################################################################
+        # TODO: implement sampling for testing mode                      #
+        # Give the record and the modality, this function should return  #
+        # a list of integers representing the frames to be selected from #
+        # the video clip.                                                #
+        # Remember that the returned array should have size              #
+        #           num_clip x num_frames_per_clip                       #
+        ##################################################################
 
-    def _get_val_indices(self, record, modality='RGB'):
-        output = []
-        if modality == 'RGB':
+        tot_frames = record.num_frames[modality]
+        n_centroids = self.num_clips
+        n_frames = self.num_frames_per_clip[modality]
 
-            clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
+        sub = []
+        for i in range(1, n_centroids + 1):
+            centr_pos = int(i * tot_frames / (n_centroids + 1))
+            sub.append(range(centr_pos - int(n_frames / 2), centr_pos + int(n_frames / 2)))
 
-            start_frame = int(record.start_frame)
-            end_frame = int(record.end_frame)
-            central_min = start_frame + clip_length // 2
-            central_max = end_frame - clip_length // 2
+        ret = np.array(sub).flatten()
+        if not ret.size == self.num_clips * n_frames:
+            raise UserWarning(f"miao Invalid number of frames: it is {ret.size}, should be {self.num_clips * n_frames}")
+        # raise NotImplementedError("You should implement _get_val_indices")
+        return ret
 
-            # randomly sample N central points
-            central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
+    # raise NotImplementedError("You should implement _get_val_indices")
 
-            # generate clips
-            if clip_length % 2 == 0:
-                clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
-            else:
-                clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
 
-            if bool(self.dense_sampling.RGB) == False:  # uniform sampling
-                for clip in clips:
-                    frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
-                    frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
-                    output.extend(frames)
 
-            else:  # dense sampling
-                for clip in clips:
-                    output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
 
-            # subtract the start_frame from each element in the list
-
-            output = [x - start_frame for x in output]
-
-        return output
+    # def _get_train_indices(self, record, modality='RGB'):
+    #     output = []
+    #     if modality == 'RGB':
+    #         clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
+    #
+    #         start_frame = int(record.start_frame)
+    #         end_frame = int(record.end_frame)
+    #         central_min = start_frame + clip_length // 2
+    #         central_max = end_frame - clip_length // 2
+    #
+    #         # randomly sample N central points
+    #         #central_points = sorted(np.random.choice(range(central_min, central_max), size=int(self.num_clips), replace=False))
+    #         central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
+    #
+    #         # generate clips
+    #         if clip_length % 2 == 0:
+    #             clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+    #         else:
+    #             clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+    #
+    #         if bool(self.dense_sampling.RGB) == False:  # uniform sampling
+    #             for clip in clips:
+    #                 frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
+    #                 frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
+    #                 output.extend(frames)
+    #
+    #         else:  # dense sampling
+    #             for clip in clips:
+    #                 output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+    #
+    #         # subtract the start_frame from each element in the list
+    #         output = [x - start_frame for x in output]
+    #
+    #     return output
+    #
+    # def _get_val_indices(self, record, modality='RGB'):
+    #     output = []
+    #     if modality == 'RGB':
+    #
+    #         clip_length = int(self.num_frames_per_clip.RGB) * int(self.stride)
+    #
+    #         start_frame = int(record.start_frame)
+    #         end_frame = int(record.end_frame)
+    #         central_min = start_frame + clip_length // 2
+    #         central_max = end_frame - clip_length // 2
+    #
+    #         # randomly sample N central points
+    #         central_points = np.linspace(central_min, central_max, num=self.num_clips, dtype=int)
+    #
+    #         # generate clips
+    #         if clip_length % 2 == 0:
+    #             clips = [(c - clip_length // 2, c + clip_length // 2 - 1) for c in central_points]
+    #         else:
+    #             clips = [(c - clip_length // 2, c + clip_length // 2) for c in central_points]
+    #
+    #         if bool(self.dense_sampling.RGB) == False:  # uniform sampling
+    #             for clip in clips:
+    #                 frame_indices = np.linspace(clip[0], clip[1], num=int(self.num_frames_per_clip.RGB), dtype=int)
+    #                 frames = [frame_indices[i] for i in range(int(self.num_frames_per_clip.RGB))]
+    #                 output.extend(frames)
+    #
+    #         else:  # dense sampling
+    #             for clip in clips:
+    #                 output.extend(dense_sampling(clip[0], clip[1], int(self.num_frames_per_clip.RGB), int(self.stride)))
+    #
+    #         # subtract the start_frame from each element in the list
+    #
+    #         output = [x - start_frame for x in output]
+    #
+    #     return output
     def __getitem__(self, index):
 
         frames = {}
