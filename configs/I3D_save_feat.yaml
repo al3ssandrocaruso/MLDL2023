@@ -1,6 +1,6 @@
 action: save # train or test
 name: saved_feat_I3D
-split: train
+split: test
 resume_from: ???
 
 # da rand a lin space
@@ -16,7 +16,7 @@ save:
     RGB: 16
 
 dataset:
-  annotations_path: train_val_as # train_val for EK
+  annotations_path: train_val_as08 # train_val for EK
   shift: ???
   workers: 0
   stride: 1
